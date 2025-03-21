@@ -1,21 +1,81 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
+import loginsvg from '../assets/login.svg';
+import logopng from '../assets/logo.png';
 
 function Login() {
+  const navigate = useNavigate();
+
+  const handleLogin = (e) => {
+    e.preventDefault();
+    navigate('/dashboard');
+  };
+
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100">
-      <div className="w-full max-w-md p-8 space-y-6 bg-white rounded shadow-md">
-        <h1 className="text-2xl font-bold text-center">Login Page</h1>
-        <form className="space-y-6">
-          <div>
-            <label htmlFor="username" className="block text-sm font-medium text-gray-700">Username:</label>
-            <input type="text" id="username" name="username" className="w-full px-3 py-2 mt-1 border rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500" />
+    <div className="flex min-h-screen">
+      <div className="w-1/2 bg-[#CBE4FE]"></div>
+      <div className="w-1/2 bg-[#1E1D6A]"></div>
+      <div className="absolute flex items-center justify-center min-h-screen w-full">
+        <div className="flex w-[800px] shadow-lg rounded-lg overflow-hidden">
+          {/* Left Section - Login Form */}
+
+          <div className="w-1/2 bg-white p-8">
+            <div className="flex justify-center mb-3 -ml-2">
+              <img
+                src={logopng} 
+                alt="logo"
+                className="w-1/4"
+              />
+            </div>
+            <h2 className="text-2xl font-bold text-center text-indigo-900">Welcome</h2>
+
+            <form className="mt-4" onSubmit={handleLogin}>
+              <input
+                type="email"
+                placeholder="Email"
+                className="w-full p-3 border rounded-lg my-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              />
+              <input
+                type="password"
+                placeholder="Password"
+                className="w-full p-3 border rounded-lg my-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              />
+
+              <div className="text-indigo-600 hover:underline text-right text-sm">
+                <a
+                  href="#"
+                  onClick={(e) => e.preventDefault()}
+                >
+                  Forget password?
+                </a>
+              </div>
+
+              <button type="submit" className="w-full bg-indigo-900 text-white py-3 rounded-lg mt-4 hover:bg-indigo-700">
+                Login
+              </button>
+            </form>
+
+            <p className="text-center text-sm text-gray-500 mt-4">
+              Don't have an account?{" "}
+              <a
+                href="#"
+                onClick={(e) => e.preventDefault()}
+                className="text-indigo-600 hover:underline"
+              >
+                Sign up
+              </a>
+            </p>
           </div>
-          <div>
-            <label htmlFor="password" className="block text-sm font-medium text-gray-700">Password:</label>
-            <input type="password" id="password" name="password" className="w-full px-3 py-2 mt-1 border rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500" />
+
+          {/* Right Section - Illustration */}
+          <div className="w-1/2 bg-[#CBE4FE] flex items-center justify-center">
+            <img
+              src={loginsvg}
+              alt="Login Illustration"
+              className="w-4/4"
+            />
           </div>
-          <button type="submit" className="w-full px-4 py-2 font-medium text-white bg-indigo-600 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">Login</button>
-        </form>
+        </div>
       </div>
     </div>
   );
