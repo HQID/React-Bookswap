@@ -1,15 +1,36 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useState } from 'react';
+import { useNavigate, Link } from 'react-router-dom';
 import loginsvg from '../assets/login.svg';
 import logopng from '../assets/logo.png';
+import {toast} from 'react-hot-toast'
+import axios from 'axios';
 
 function Login() {
   const navigate = useNavigate();
+  const [datas, setDatas] = useState({
+    email: '',
+    password: ''
+  })
 
-  const handleLogin = (e) => {
-    e.preventDefault();
-    navigate('/dashboard');
-  };
+  const handleLogin =  async (e) => {
+      e.preventDefault();
+      
+      try {
+          const {data} = await axios.post('/login', datas)
+          setDatas({
+            email: '',
+            password: ''
+          })
+          toast.success(data.message)
+          navigate('/')
+          // window.location.reload()
+      } catch (err) {
+          toast.error(err.response.data.error)
+          console.log(err);
+      }
+
+  }
 
   return (
     <div className="flex min-h-screen">
@@ -33,11 +54,19 @@ function Login() {
               <input
                 type="email"
                 placeholder="Email"
+                value={datas.email}
+                onChange={(e) => setDatas({
+                  ...datas, email: e.target.value
+                })}
                 className="w-full p-3 border rounded-lg my-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
               />
               <input
                 type="password"
                 placeholder="Password"
+                value={datas.password}
+                onChange={(e) => setDatas({
+                  ...datas, password: e.target.value
+                })}
                 className="w-full p-3 border rounded-lg my-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
               />
 
@@ -57,13 +86,14 @@ function Login() {
 
             <p className="text-center text-sm text-gray-500 mt-4">
               Don't have an account?{" "}
-              <a
-                href="#"
-                onClick={(e) => e.preventDefault()}
-                className="text-indigo-600 hover:underline"
-              >
-                Sign up
-              </a>
+              <Link to="/signup">
+                <span
+                  className="text-indigo-600 hover:underline"
+                >
+                  Sign up
+                </span>
+              </Link>
+              
             </p>
           </div>
 

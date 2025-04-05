@@ -1,8 +1,64 @@
 import React from 'react'
+import { useState, useEffect } from 'react'
 import logopng from '../assets/logo.png';
 import signsvg from '../assets/signup.svg';
+import { useNavigate, Link } from 'react-router-dom';
+import axios from 'axios';
+import {toast} from 'react-hot-toast'
 
 export default function Register() {
+  const navigate = useNavigate();
+  const [datas, setDatas] = useState({
+    fullname: '',
+    username: '',
+    gender: '',
+    city: '',
+    address: '',
+    telephone: '',
+    email: '',
+    password: '',
+    confirmPassword: ''
+  });
+
+  const [isFormValid, setIsFormValid] = useState(false);
+
+  useEffect(() => {
+    setIsFormValid(
+      datas.fullname.trim()!== '' &&
+      datas.username.trim()!== '' &&
+      datas.gender.trim()!== '' &&
+      datas.city.trim()!== '' &&
+      datas.address.trim()!== '' &&
+      datas.telephone.trim()!== '' &&
+      datas.email.trim()!== '' &&
+      datas.password.trim()!== '',
+      datas.password === datas.confirmPassword
+    )
+  } ,[datas]);
+
+  const registerUser = async (ev) => {
+    ev.preventDefault();
+    try {
+      const {data} = await axios.post('/register', datas)
+        setDatas({
+          fullname: '',
+          username: '',
+          gender: '',
+          city: '',
+          address: '',
+          telephone: '',
+          email: '',
+          password: '',
+          confirmPassword: ''
+        });
+        toast.success('Registration Successful')
+        navigate('/signin')
+    } catch(err) {
+        toast.error(err.response.data.error)
+        console.log(err)
+    }
+  }
+
   return (
     <div className="flex min-h-screen">
           <div className="w-1/2 bg-[#CBE4FE]"></div>
@@ -21,67 +77,106 @@ export default function Register() {
                 </div>
                 <h2 className="text-2xl font-bold text-center text-indigo-900">Create Account</h2>
     
-                <form className="mt-3">
+                <form onSubmit={registerUser} className="mt-3">
                   <input
                     type="full-name"
-                    placeholder="full name"
+                    placeholder="Fullname"
+                    value={datas.fullname}
+                    onChange={(e) => setDatas({
+                      ...datas, fullname: e.target.value
+                    })}
                     className="w-full p-1 border-b my-1 focus:outline-none focus:ring-2 focus:ring-indigo-500"
                   />
                   <input
                     type="username"
-                    placeholder="username"
+                    placeholder="Username"
+                    value={datas.username}
+                    onChange={(e) => setDatas({
+                      ...datas, username: e.target.value
+                    })}
                     className="w-full p-1 border-b my-1 focus:outline-none focus:ring-2 focus:ring-indigo-500"
                   />
-                  <input
-                    type="gender"
-                    placeholder="gender"
+                  <select
+                    value={datas.gender}
+                    onChange={(e) => setDatas({
+                      ...datas, gender: e.target.value
+                    })}
                     className="w-full p-1 border-b my-1 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                  />
+                  >
+                    <option value="" disabled>Select Gender</option>
+                    <option value="Laki-laki">Laki-laki</option>
+                    <option value="Perempuan">Perempuan</option>
+                  </select>
                   <input
                     type="city"
-                    placeholder="city"
+                    placeholder="City"
+                    value={datas.city}
+                    onChange={(e) => setDatas({
+                      ...datas, city: e.target.value
+                    })}
                     className="w-full p-1 border-b my-1 focus:outline-none focus:ring-2 focus:ring-indigo-500"
                   />
                     <input
                     type="address"
-                    placeholder="address"
+                    placeholder="Address"
+                    value={datas.address}
+                    onChange={(e) => setDatas({
+                      ...datas, address: e.target.value
+                    })}
                     className="w-full p-1 border-b my-1 focus:outline-none focus:ring-2 focus:ring-indigo-500"
                   />
                     <input
                     type="telephone"
-                    placeholder="telephone"
+                    placeholder="Handphone Number"
+                    value={datas.telephone}
+                    onChange={(e) => setDatas({
+                      ...datas, telephone: e.target.value
+                    })}
                     className="w-full p-1 border-b my-1 focus:outline-none focus:ring-2 focus:ring-indigo-500"
                   />
                     <input
                     type="email"
-                    placeholder="email"
+                    placeholder="Email"
+                    value={datas.email}
+                    onChange={(e) => setDatas({
+                      ...datas, email: e.target.value
+                    })}
                     className="w-full p-1 border-b my-1 focus:outline-none focus:ring-2 focus:ring-indigo-500"
                   />
                     <input
                     type="password"
-                    placeholder="password"
+                    placeholder="Password"
+                    value={datas.password}
+                    onChange={(e) => setDatas({
+                      ...datas, password: e.target.value
+                    })}
                     className="w-full p-1 border-b my-1 focus:outline-none focus:ring-2 focus:ring-indigo-500"
                   />
                    <input
-                    type="confirm-password"
-                    placeholder="confirm password"
+                    type="password"
+                    placeholder="Confirm Password"
+                    value={datas.confirmPassword}
+                    onChange={(e) => setDatas({
+                      ...datas, confirmPassword: e.target.value
+                    })}
                     className="w-full p-1 border-b my-1 focus:outline-none focus:ring-2 focus:ring-indigo-500"
                   />
     
-                  <button className="w-full bg-indigo-900 text-white py-3 rounded-lg mt-4 hover:bg-indigo-700">
+                  <button disabled={!isFormValid} className="w-full bg-indigo-900 text-white py-3 rounded-lg mt-4 hover:bg-indigo-700">
                     Sign Up
                   </button>
                 </form>
     
                 <p className="text-center text-sm text-gray-500 mt-4">
                   Have an account?{" "}
-                  <a
-                    href="#"
-                    onClick={(e) => e.preventDefault()}
-                    className="text-indigo-600 hover:underline"
-                  >
-                    Sign In
-                  </a>
+                  <Link to="/signin">
+                    <span
+                      className="text-indigo-600 hover:underline"
+                    >
+                      Sign In
+                    </span>
+                  </Link>
+                  
                 </p>
               </div>
     
