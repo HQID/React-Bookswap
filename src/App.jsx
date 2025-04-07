@@ -5,6 +5,7 @@ import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
 import Register from './pages/Register';
 import axios from 'axios';
+import DetailBuku from './pages/DetailBuku';
 
 const apiDev = import.meta.env.VITE_API_BASE_URL_DEV
 axios.defaults.baseURL = apiDev;
@@ -19,6 +20,7 @@ function App() {
           <Route path="/" element={<Dashboard />} />
           <Route path="/signin" element={<Login />} />
           <Route path="/signup" element={<Register />} />
+          <Route path="/detailbuku" element={<DetailBuku />} />
         </Routes>
       </Router>
     </>
