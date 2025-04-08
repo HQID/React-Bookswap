@@ -1,15 +1,41 @@
 import React from "react";
 import logopng from '../assets/logo.png';
 import book1 from '../assets/book1.png';
-import banner from '../assets/banner.png'; // Pastikan path-nya benar
+import book2 from '../assets/book2.png';
+import book3 from '../assets/book3.png';
+import book4 from '../assets/book4.png';
+import banner from '../assets/banner.png';
+import Footer from '../components/Footer';
+import Navbar from '../components/Navbar';
 
-function Card({ children, className }) {
+
+function Card({ title, status, img, children }) {
+  const isSwap = status?.toUpperCase() === "SWAP";
+
   return (
-    <div className={`bg-white rounded-2xl shadow-md overflow-hidden ${className}`}>
-      {children}
+    <div className="bg-white rounded-2xl shadow-md overflow-hidden transition-transform hover:scale-105 duration-300">
+      {/* Gambar jika ada */}
+      {img && <img src={img} alt={title} className="w-full h-64 object-cover" />}
+
+      <div className="p-4">
+        {/* Judul */}
+        {title && <p className="font-semibold text-gray-900 text-base mb-1">{title}</p>}
+
+        {/* Status swap/available */}
+        {status && (
+          <p className={`text-sm font-semibold ${isSwap ? 'text-purple-700' : 'text-blue-600'}`}>
+            {status.toUpperCase()}
+          </p>
+        )}
+
+        {/* Slot children jika ada konten tambahan */}
+        {children}
+      </div>
     </div>
   );
 }
+
+
 
 function CardContent({ children }) {
   return (
@@ -23,23 +49,23 @@ export default function Dashboard() {
   const books = [
     {
       title: 'Laut Bercerita',
-      price: 'SWAP',
+      status: 'SWAP',
       img: book1
     },
     {
       title: 'Durian Sukegawa - Pasta Kacang Merah',
-      price: 'Rp61.000',
-      img: book1
+      status: 'AVAILABLE',
+      img: book2
     },
     {
       title: 'Naoki Urasawa - 20th Century Boys',
-      price: 'Rp61.000',
-      img: book1
+      status: 'AVAILABLE',
+      img: book3
     },
     {
       title: 'Kim Seo Ryul - Things Left Behind',
-      price: 'Rp61.000',
-      img: book1
+      status: 'SWAP',
+      img: book4
     }
     // Tambahkan buku lain sesuai kebutuhan
   ];
@@ -47,14 +73,14 @@ export default function Dashboard() {
   return (
     <div className="min-h-screen bg-[#FFFFFF] font-sans">
       {/* Navbar */}
-      <nav className="bg-white shadow-md">
+      <nav className="bg-white">
   <div className="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
     
     {/* Logo */}
     <img src={logopng} alt="Bookswap logo" className="h-8" />
 
     {/* Search Bar */}
-    <div className="relative w-full max-w-md mx-4 hidden sm:block">
+    <div className="relative w-full max-w-md mx-4 shadow-md hidden sm:block">
       <input 
         type="text"
         placeholder="Search books..."
@@ -81,10 +107,10 @@ export default function Dashboard() {
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2 9h14l-2-9M10 21a1 1 0 102 0" />
         </svg>
       </button>
-      <button className="px-4 py-1 text-sm font-medium border rounded-full text-indigo-900 border-indigo-900 hover:bg-indigo-900 hover:text-white transition">
+      <button className="px-4 py-1 text-sm font-medium border rounded-full text-indigo-800 border-indigo-800 hover:bg-indigo-900 hover:text-white transition">
         Sign up
       </button>
-      <button className="px-4 py-1 text-sm font-medium border rounded-full text-white bg-indigo-900 hover:bg-indigo-800 transition">
+      <button className="px-4 py-1 text-sm font-medium border rounded-full text-white bg-indigo-800 hover:bg-indigo-800 transition">
         Sign in
       </button>
     </div>
@@ -97,11 +123,11 @@ export default function Dashboard() {
     
     {/* Kiri - Teks */}
     <div className="max-w-md">
-      <h1 className="text-2xl md:text-3xl font-bold text-indigo-900 leading-tight">
+      <h1 className="text-5xl md:text-6xl font-bold text-indigo-800 leading-tight">
         Swap, read, <br /> repeat with
       </h1>
       <div className="mt-2 flex items-center space-x-2">
-        <img src={logopng} alt="Bookswap logo" className="h-6" />
+        <img src={logopng} alt="Bookswap logo" className="h-18" />
       </div>
       <p className="mt-2 text-sm text-indigo-800">Online book exchange platform</p>
     </div>
@@ -117,19 +143,18 @@ export default function Dashboard() {
 
       {/* Book Swap Section */}
       <section className="max-w-6xl mx-auto px-4 py-10">
-        <h2 className="text-2xl font-bold mb-6 text-indigo-800">Swap</h2>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-          {books.map((book, index) => (
-            <Card key={index}>
-              <img src={book.img} alt={book.title} className="w-full h-60 object-cover" />
-              <CardContent>
-                <p className="font-semibold text-gray-800 text-sm">{book.title}</p>
-                <p className="text-indigo-600 font-semibold text-sm">{book.price}</p>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
-      </section>
+       <h2 className="text-2xl font-bold mb-6 text-indigo-800">Swap</h2>
+       <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+       {books.map((book, index) => (
+       <Card
+        key={index}
+        title={book.title}
+        status={book.status}
+        img={book.img}
+      />
+    ))}
+      </div>
+     </section>
 
       {/* Footer */}
       <footer className= "bg-[#DDEEFF] py-10 mt-16">
