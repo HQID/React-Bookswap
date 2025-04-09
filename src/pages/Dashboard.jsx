@@ -4,26 +4,32 @@ import book1 from '../assets/book1.png';
 import book2 from '../assets/book2.png';
 import book3 from '../assets/book3.png';
 import book4 from '../assets/book4.png';
+import book5 from '../assets/book5.png';
+import book6 from '../assets/book6.png';
+import book7 from '../assets/book7.png';
+import book8 from '../assets/book8.png';
 import banner from '../assets/banner.png';
 import Footer from '../components/Footer';
 import Navbar from '../components/Navbar';
 
-function Card({ title, status, img, children }) {
+function Card({ title, author, status, img }) {
   const isSwap = status?.toUpperCase() === "SWAP";
 
   return (
-    <div className="bg-white rounded-2xl shadow-md overflow-hidden transition-transform hover:scale-105 duration-300">
-      {/* Gambar jika ada */}
-      {img && <img src={img} alt={title} className="w-full h-64 object-cover" />}
+    <div className="bg-white rounded-2xl border border-[#D9D9D9] shadow-md overflow-hidden transition-transform hover:scale-105 duration-300">
+      {img && <img src={img} alt={title} className="w-full h-64 object-contain p-4" />}
 
-      <div className="p-4">
-        {title && <p className="font-semibold text-gray-900 text-base mb-1">{title}</p>}
-        {status && (
-          <p className={`text-sm font-semibold ${isSwap ? 'text-purple-700' : 'text-blue-600'}`}>
-            {status.toUpperCase()}
-          </p>
-        )}
-        {children}
+      <div className="px-4 pb-4">
+        {/* Penulis */}
+        <p className="text-sm text-gray-400 font-semibold">{author}</p>
+
+        {/* Judul Buku */}
+        <p className="text-base font-bold text-black">{title}</p>
+
+        {/* Status */}
+        <p className={`text-sm font-semibold py-1  ${isSwap ? ' text-[#757070] font-normal' : ' text-[#1E1D6A] font-bold'}`}>{status}
+  </p>
+
       </div>
     </div>
   );
@@ -32,24 +38,52 @@ function Card({ title, status, img, children }) {
 export default function Dashboard() {
   const books = [
     {
+      author: 'Leila S. Chudori',
       title: 'Laut Bercerita',
       status: 'SWAP',
       img: book1
     },
     {
-      title: 'Durian Sukegawa - Pasta Kacang Merah',
+      author: 'Durian Sukegawa',
+      title: 'Pasta Kacang Merah',
       status: 'AVAILABLE',
       img: book2
     },
     {
-      title: 'Naoki Urasawa - 20th Century Boys',
+      author: 'Naoki Urasawa',
+      title: '20th Century Boys',
       status: 'AVAILABLE',
       img: book3
     },
     {
-      title: 'Kim Seo Ryul - Things Left Behind',
+      author: 'Kim Seo Ryul',
+      title: 'Things Left Behind',
       status: 'SWAP',
       img: book4
+    },
+    {
+      author: 'Adrindia Ryandisza',
+      title: 'Uang Gawat Darurat',
+      status: 'SWAP',
+      img: book5
+    },
+    {
+      author: 'DUBU/CHUGONG',
+      title: 'Solo Leveling 7',
+      status: 'AWAILABLE',
+      img: book6
+    },
+    {
+      author: 'Brian Khrisna',
+      title: 'Seporsi Mie Ayam Sebelum Mati',
+      status: 'AVAILABLE',
+      img: book7
+    },
+    { 
+      author: 'Romee',
+      title: '30 Juz',
+      status: 'AVAILABLE',
+      img: book8
     }
   ];
 
@@ -58,78 +92,51 @@ export default function Dashboard() {
       {/* Navbar */}
       <Navbar/>
 
-      {/* Banner */}
-<section className="flex justify-center mt-8">
-  <div className="w-[90%] md:w-[90%] bg-[#DDEEFF] rounded-2xl shadow-lg flex items-center justify-between p-6 md:p-5">
-    
-    {/* Kiri - Teks */}
-    <div className="max-w-md px-12">
-      <h1 className="text-5xl md:text-6xl font-bold text-indigo-800 leading-tight">
-        Swap, read, <br /> repeat with
-      </h1>
-      <div className="mt-2 flex items-center space-x-2">
-        <img src={logopng} alt="Bookswap logo" className="h-18" />
+      <div className="container mx-auto px-4 lg:px-40">
+  
+  {/* Banner */}
+  <section className="mt-8">
+    <div className="bg-[#DDEEFF] rounded-2xl shadow-lg flex flex-col md:flex-row items-center justify-between p-6 md:pl-20 pr-20">
+      
+      {/* Kiri - Teks */}
+      <div className="max-w-md px-0">
+        <h1 className="text-5xl md:text-6xl font-bold text-[#1E1D6A] leading-tight">
+          Swap, read, <br /> repeat with
+        </h1>
+        <div className="mt-2 flex items-center space-x-2">
+          <img src={logopng} alt="Bookswap logo" className="h-18" />
+        </div>
+        <p className="mt-2 text-sm text-[#1E1D6A]">Online book exchange platform</p>
       </div>
-      <p className="mt-2 text-sm text-indigo-800">Online book exchange platform</p>
+
+      {/* Kanan - Gambar banner */}
+      <div className="hidden md:block w-[40%]">
+        <img src={banner} alt="Banner" className="w-full object-contain" />
+      </div>
+
     </div>
+  </section>
 
-    {/* Kanan - Gambar banner */}
-    <div className="hidden md:block w-[40%]">
-      <img src={banner} alt="Banner" className="w-full object-contain" />
-    </div>
-
-  </div>
-</section>
-
-
-      {/* Book Swap Section */}
-      <section className="max-w-6xl mx-auto px-2 py-10">
-       <h2 className="text-2xl font-bold mb-6 text-indigo-800">Swap</h2>
-       <div className="grid grid-cols-2 md:grid-cols-4 gap-12">
-       {books.map((book, index) => (
-       <Card
+  {/* Book Swap Section */}
+  <section className="py-10">
+    <h2 className="text-3xl font-bold mb-6 text-[#1E1D6A]">Swap</h2>
+    <div className="grid grid-cols-2 md:grid-cols-4 gap-12">
+    {books.map((book, index) => (
+      <Card
         key={index}
         title={book.title}
+        author={book.author}
         status={book.status}
         img={book.img}
       />
-    ))}
-      </div>
-     </section>
+      ))}
+    </div>
+  </section>
+
+</div>
 
       {/* Footer */}
-      <footer className= "bg-[#DDEEFF] py-10 mt-16">
-        <div className="max-w-6xl mx-auto px-4 grid grid-cols-2 md:grid-cols-4 gap-8 text-sm text-gray-600">
-          <div>
-            <h4 className="font-bold mb-3">Information</h4>
-            <ul>
-              <li>Shipping</li>
-              <li>Store</li>
-              <li>Book Rental</li>
-              <li>Shipping</li>
-            </ul>
-          </div>
-          <div>
-            <h4 className="font-bold mb-3">About Bookswap</h4>
-            <ul>
-              <li>About Us</li>
-              <li>Contact Us</li>
-            </ul>
-          </div>
-          <div>
-            <h4 className="font-bold mb-3">Other</h4>
-            <ul>
-              <li>Shop</li>
-              <li>Privacy Policy</li>
-              <li>Cooperation</li>
-            </ul>
-          </div>
-          <div className="flex flex-col items-center justify-center">
-            <img src={logopng} alt="logo" className="h-8 mb-3" />
-            <p>© 2025 Bookswap</p>
-          </div>
-        </div>
-      </footer>
+      <Footer/>
     </div>
   );
 }

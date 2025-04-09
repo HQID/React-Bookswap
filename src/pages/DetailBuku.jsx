@@ -5,34 +5,34 @@ import book1 from '../assets/book1.png';
 import book2 from '../assets/book2.png';
 import book3 from '../assets/book3.png';
 import book4 from '../assets/book4.png';
+import book5 from '../assets/book5.png';
+import book6 from '../assets/book6.png';
+import book7 from '../assets/book7.png';
+import book8 from '../assets/book8.png';
 
 
 
-function Card({ title, status, img, children }) {
+function Card({ title, author, status, img }) {
   const isSwap = status?.toUpperCase() === "SWAP";
 
   return (
     <div className="bg-white rounded-2xl border border-[#D9D9D9] shadow-md overflow-hidden transition-transform hover:scale-105 duration-300">
-      {/* Gambar jika ada */}
-      {img && <img src={img} alt={title} className="w-full h-64 object-contain p-2" />}
+      {img && <img src={img} alt={title} className="w-full h-64 object-contain p-4" />}
 
-      <div className="p-4">
-        {/* Judul */}
-        {title && <p className="font-semibold text-gray-900 text-base mb-1">{title}</p>}
+      <div className="px-4 pb-4">
+        {/* Penulis */}
+        <p className="text-sm text-gray-400 font-semibold">{author}</p>
 
-        {/* Status swap/available */}
-        {status && (
-          <p className={`text-sm font-semibold ${isSwap ? 'text-purple-700' : 'text-blue-600'}`}>
-            {status.toUpperCase()}
-          </p>
-        )}
+        {/* Judul Buku */}
+        <p className="text-base font-bold text-black">{title}</p>
 
-        {/* Slot children jika ada konten tambahan */}
-        {children}
+        {/* Status */}
+        <p className="text-[#1E1D6A] font-bold">{status}</p>
       </div>
     </div>
   );
 }
+
 
 
 
@@ -46,38 +46,42 @@ function CardContent({ children }) {
 
 export default function DetailBuku() {
   const books = [
-      {
-        title: 'Laut Bercerita',
-        status: 'SWAP',
-        img: book1
-      },
-      {
-        title: 'Durian Sukegawa - Pasta Kacang Merah',
-        status: 'AVAILABLE',
-        img: book2
-      },
-      {
-        title: 'Naoki Urasawa - 20th Century Boys',
-        status: 'AVAILABLE',
-        img: book3
-      },
-      {
-        title: 'Kim Seo Ryul - Things Left Behind',
-        status: 'SWAP',
-        img: book4
-      }
-      // Tambahkan buku lain sesuai kebutuhan
-    ];
+    {
+      author: 'Adrindia Ryandisza',
+      title: 'Uang Gawat Darurat',
+      status: 'SWAP',
+      img: book5
+    },
+    {
+      author: 'DUBU/CHUGONG',
+      title: 'Solo Leveling 7',
+      status: 'SWAP',
+      img: book6
+    },
+    {
+      author: 'Brian Khrisna',
+      title: 'Seporsi Mie Ayam Sebelum Mati',
+      status: 'SWAP',
+      img: book7
+    },
+    {
+      author: 'Romee',
+      title: '30 Juz',
+      available: 'Rp77.000',
+      img: book8
+    }
+  ];
+  
   return (
     <div className="min-h-screen font-sans">
       {/* Navbar */}
       <Navbar/>
 
-      <div className="px-20 md:px-24 lg:px-11">
+      <div className="container mx-auto px-4 lg:px-40">
 
       {/* Book Section */}
-      <section className="flex justify px-24 py-12 gap-16">
-        <img src={book1} alt="Laut Bercerita" className="w-50 h-80 rounded shadow-md" />
+      <section className="flex justify py-12 gap-16">
+        <img src={book1} alt="Laut Bercerita" className="w-50 h-80  shadow-md" />
 
         <div>
           <h2 className="text-[35px] font-bold text-[#2D336B]">Laut Bercerita</h2>
@@ -107,7 +111,7 @@ export default function DetailBuku() {
         </div>
       </section>
 
-      <section className="grid grid-cols-[200px_1fr] px-24 gap-[84px] items-start">
+      <section className="grid grid-cols-[200px_1fr] gap-[84px] items-start">
         <h3 className="font-bold text-[#4E5E67] text-[23px]">Book Details</h3>
   
         <div className="grid grid-cols-4 gap-y-4 text-[15px] text-[#43545D]">
@@ -125,17 +129,19 @@ export default function DetailBuku() {
 
 
       {/* Explore More Books */}
-      <section className="px-16 pb-16 py-10 ml-8">
+      <section className=" py-10">
         <h3 className="text-[#1E1D6A] text-[35px] font-bold mb-6 ">Explore More Books</h3>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-12">
-       {books.map((book, index) => (
-       <Card
+        {books.map((book, index) => (
+      <Card
         key={index}
         title={book.title}
+        author={book.author}
         status={book.status}
         img={book.img}
       />
-    ))}
+      ))}
+
       </div>
       </section>
 
