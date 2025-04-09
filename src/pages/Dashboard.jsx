@@ -13,9 +13,9 @@ function Card({ title, status, img, children }) {
   const isSwap = status?.toUpperCase() === "SWAP";
 
   return (
-    <div className="bg-white rounded-2xl shadow-md overflow-hidden transition-transform hover:scale-105 duration-300">
+    <div className="bg-white rounded-2xl border border-[#D9D9D9] shadow-md overflow-hidden transition-transform hover:scale-105 duration-300">
       {/* Gambar jika ada */}
-      {img && <img src={img} alt={title} className="w-full h-64 object-cover" />}
+      {img && <img src={img} alt={title} className="w-full h-64 object-contain p-2" />}
 
       <div className="p-4">
         {/* Judul */}
@@ -75,44 +75,48 @@ export default function Dashboard() {
       {/* Navbar */}
       <Navbar/>
 
-      {/* Banner */}
-<section className="flex justify-center mt-8">
-  <div className="w-[90%] md:w-[90%] bg-[#DDEEFF] rounded-2xl shadow-lg flex items-center justify-between p-6 md:p-5">
-    
-    {/* Kiri - Teks */}
-    <div className="max-w-md px-12">
-      <h1 className="text-5xl md:text-6xl font-bold text-indigo-800 leading-tight">
-        Swap, read, <br /> repeat with
-      </h1>
-      <div className="mt-2 flex items-center space-x-2">
-        <img src={logopng} alt="Bookswap logo" className="h-18" />
+      <div className="px-20 md:px-24 lg:px-36">
+  
+  {/* Banner */}
+  <section className="mt-8">
+    <div className="bg-[#DDEEFF] rounded-2xl shadow-lg flex flex-col md:flex-row items-center justify-between p-6 md:p-5">
+      
+      {/* Kiri - Teks */}
+      <div className="max-w-md px-0 md:px-12">
+        <h1 className="text-5xl md:text-6xl font-bold text-indigo-800 leading-tight">
+          Swap, read, <br /> repeat with
+        </h1>
+        <div className="mt-2 flex items-center space-x-2">
+          <img src={logopng} alt="Bookswap logo" className="h-18" />
+        </div>
+        <p className="mt-2 text-sm text-indigo-800">Online book exchange platform</p>
       </div>
-      <p className="mt-2 text-sm text-indigo-800">Online book exchange platform</p>
-    </div>
 
-    {/* Kanan - Gambar banner */}
-    <div className="hidden md:block w-[40%]">
-      <img src={banner} alt="Banner" className="w-full object-contain" />
-    </div>
-
-  </div>
-</section>
-
-
-      {/* Book Swap Section */}
-      <section className="max-w-6xl mx-auto px-2 py-10">
-       <h2 className="text-2xl font-bold mb-6 text-indigo-800">Swap</h2>
-       <div className="grid grid-cols-2 md:grid-cols-4 gap-12">
-       {books.map((book, index) => (
-       <Card
-        key={index}
-        title={book.title}
-        status={book.status}
-        img={book.img}
-      />
-    ))}
+      {/* Kanan - Gambar banner */}
+      <div className="hidden md:block w-[40%]">
+        <img src={banner} alt="Banner" className="w-full object-contain" />
       </div>
-     </section>
+
+    </div>
+  </section>
+
+  {/* Book Swap Section */}
+  <section className="py-10">
+    <h2 className="text-2xl font-bold mb-6 text-indigo-800">Swap</h2>
+    <div className="grid grid-cols-2 md:grid-cols-4 gap-12">
+      {books.map((book, index) => (
+        <Card
+          key={index}
+          title={book.title}
+          status={book.status}
+          img={book.img}
+        />
+      ))}
+    </div>
+  </section>
+
+</div>
+
 
       {/* Footer */}
       <Footer/>

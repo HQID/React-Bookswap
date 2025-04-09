@@ -2,6 +2,7 @@ import React from "react";
 import logopng from '../assets/logo.png';
 import book1 from '../assets/book1.png';
 import banner from '../assets/banner.png';
+import { ShoppingCart } from "lucide-react";
 
 export default function Navbar() {
   return (
@@ -31,13 +32,7 @@ export default function Navbar() {
         {/* Right Side (Cart + Auth Buttons) */}
         <div className="flex items-center space-x-4">
           <button>
-            <svg
-              className="h-6 w-6 text-gray-700"
-              fill="none" stroke="currentColor"
-              viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"
-            >
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2 9h14l-2-9M10 21a1 1 0 102 0" />
-            </svg>
+            <ShoppingCart />
           </button>
           <button className="px-4 py-1 text-sm font-medium border rounded-full text-indigo-800 border-indigo-800 hover:bg-indigo-900 hover:text-white transition">
             Sign up

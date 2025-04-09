@@ -12,9 +12,9 @@ function Card({ title, status, img, children }) {
   const isSwap = status?.toUpperCase() === "SWAP";
 
   return (
-    <div className="bg-white rounded-2xl shadow-md overflow-hidden transition-transform hover:scale-105 duration-300">
+    <div className="bg-white rounded-2xl border border-[#D9D9D9] shadow-md overflow-hidden transition-transform hover:scale-105 duration-300">
       {/* Gambar jika ada */}
-      {img && <img src={img} alt={title} className="w-full h-64 object-cover" />}
+      {img && <img src={img} alt={title} className="w-full h-64 object-contain p-2" />}
 
       <div className="p-4">
         {/* Judul */}
@@ -72,6 +72,8 @@ export default function DetailBuku() {
     <div className="min-h-screen font-sans">
       {/* Navbar */}
       <Navbar/>
+
+      <div className="px-20 md:px-24 lg:px-11">
 
       {/* Book Section */}
       <section className="flex justify px-24 py-12 gap-16">
@@ -136,6 +138,8 @@ export default function DetailBuku() {
     ))}
       </div>
       </section>
+
+      </div>
 
       {/* Footer */}
       <Footer/>
