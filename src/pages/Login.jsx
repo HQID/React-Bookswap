@@ -24,7 +24,7 @@ function Login() {
           })
           toast.success(data.message)
           navigate('/')
-          // window.location.reload()
+          window.location.reload()
       } catch (err) {
           toast.error(err.response.data.error)
           console.log(err);
