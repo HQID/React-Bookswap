@@ -1,10 +1,8 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import { useParams } from "react-router-dom";
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
-import book1 from '../assets/book1.png';
-import book2 from '../assets/book2.png';
-import book3 from '../assets/book3.png';
-import book4 from '../assets/book4.png';
+import axios from "axios";
 import book5 from '../assets/book5.png';
 import book6 from '../assets/book6.png';
 import book7 from '../assets/book7.png';
@@ -13,8 +11,6 @@ import book8 from '../assets/book8.png';
 
 
 function Card({ title, author, status, img }) {
-  const isSwap = status?.toUpperCase() === "SWAP";
-
   return (
     <div className="bg-white rounded-2xl border border-[#D9D9D9] shadow-md overflow-hidden transition-transform hover:scale-105 duration-300">
       {img && <img src={img} alt={title} className="w-full h-64 object-contain p-4" />}
@@ -33,9 +29,6 @@ function Card({ title, author, status, img }) {
   );
 }
 
-
-
-
 function CardContent({ children }) {
   return (
     <div className="p-4">
@@ -45,6 +38,36 @@ function CardContent({ children }) {
 }
 
 export default function DetailBuku() {
+  const { id } = useParams();
+  const [book, setBook] = useState(null);
+
+  useEffect(() => {
+    const fetchBook = async () => {
+      try {
+        const response = await axios.get(`/book/${id}`); // Adjust the endpoint as needed
+        const fetchedBook = response.data.data;
+
+        // Convert language code to language name dynamically
+        const languageDisplay = new Intl.DisplayNames(['en'], { type: 'language' });
+        fetchedBook.languange = languageDisplay.of(fetchedBook.languange) || fetchedBook.languange;
+
+        fetchedBook.status = fetchedBook.status.toUpperCase();
+        fetchedBook.published = new Date(fetchedBook.published).toLocaleDateString();
+        fetchedBook.purchase = new Date(fetchedBook.purchase).toLocaleDateString();
+
+        setBook(fetchedBook);
+      } catch (error) {
+        console.error("Error fetching book:", error);
+      }
+    };
+
+    fetchBook();
+  }, [id]);
+
+  if (!book) {
+    return <div>Loading...</div>;
+  }
+
   const books = [
     {
       author: 'Adrindia Ryandisza',
@@ -75,34 +98,33 @@ export default function DetailBuku() {
   return (
     <div className="min-h-screen font-sans">
       {/* Navbar */}
-      <Navbar/>
+      <Navbar />
 
       <div className="container mx-auto px-4 lg:px-40">
 
       {/* Book Section */}
       <section className="flex justify py-12 gap-16">
-        <img src={book1} alt="Laut Bercerita" className="w-50 h-80  shadow-md" />
+        <img src={book.image} alt={book.title} className="w-50 h-80  shadow-md" />
 
         <div>
-          <h2 className="text-[35px] font-bold text-[#2D336B]">Laut Bercerita</h2>
-          <p className="text-[15px] font-bold text-gray-600">Leila S. Chudori</p>
-          <p className="text-[35px] font-bold text-[#263238] mb-4">Rp90.000</p>
+          <h2 className="text-[35px] font-bold text-[#2D336B]">{book.title}</h2>
+          <p className="text-[15px] font-bold text-gray-600">{book.authors}</p>
+          <p className="text-[35px] font-bold text-[#263238] mb-4">{book.status}</p>
 
-          <h3 className="font-bold text-[#4E5E67]  flex items-center text-[23px]"> Description
+          <h3 className="font-bold text-[#4E5E67] flex items-center text-[23px]"> Description
           <span className="flex gap-2 ml-10">
-            <span className="bg-[#C9E2FB] text-[#4E5E67] text-xs px-2 py-1 rounded-[8px] shadow-md">Fiksi Sejarah</span>
-            <span className="bg-[#C9E2FB] text-[#4E5E67] text-xs px-2 py-1 rounded-[8px] shadow-md">Drama</span>
+            {book.category?.map((cat, index) => (
+              <span
+                key={index}
+                className="bg-[#C9E2FB] text-[#4E5E67] text-xs px-2 py-1 rounded-[8px] shadow-md"
+              >
+                {cat}
+              </span>
+            ))}
           </span>
           </h3>
 
-          <p className="py-1 text-[43545D] text-[15px]  mb-2">
-            Buku Laut Bercerita menceritakan terkait perilaku kekejaman dan kebingisan yang dirasakan oleh kelompok
-            aktivis mahasiswa di masa Orde Baru. Tidak hanya itu, novel ini pun menenangkan kembali akan hilangnya
-            tiga belas aktivis, bahkan sampai saat ini belum juga ada yang mendapatkan petunjuknya. Buku ini juga
-            bercerita tentang kisah keluarga yang kehilangan, sekumpulan sahabat yang merasakan kekosongan di dada,
-            sekelompok orang yang gemar menulis dan lancar berbicara, dan sejumlah keluarga yang mencari kejelasan
-            makam anaknya.
-          </p>
+          <p className="py-1 text-[43545D] text-[15px]  mb-2">{book.description}</p>
 
           <div className="flex gap-4 mb-6">
             <button className="bg-[#1E1D6A] text-white font-semibold px-9 py-1 shadow-md">Cart</button>
@@ -115,15 +137,15 @@ export default function DetailBuku() {
         <h3 className="font-bold text-[#4E5E67] text-[23px]">Book Details</h3>
   
         <div className="grid grid-cols-4 gap-y-4 text-[15px] text-[#43545D]">
-          <p>Publisher <span className="text-black block">Gramedia Pustaka Utama</span></p>
-          <p>Language <span className="text-black block">Indonesia</span></p>
-          <p>Purchase Date <span className="text-black block">04 May 2024</span></p>
+          <p>Publisher <span className="text-black block">{book.publisher}</span></p>
+          <p>Language <span className="text-black block">{book.languange}</span></p>
+          <p>Purchase Date <span className="text-black block">{book.purchase}</span></p>
           <p className="font-semibold">Book Condition <span className="text-black font-normal block">Like New</span></p>
 
-          <p>ISBN <span className="text-black block">9786020411333</span></p>
-          <p>Pages <span className="text-black block">210</span></p>
-          <p>Published Date <span className="text-black block">01 January 2024</span></p>
-          <p className="font-semibold">Book Location <span className="text-black font-normal block">Tolitoli, Sulawesi Tengah</span></p>
+          <p>ISBN <span className="text-black block">{book.isbn}</span></p>
+          <p>Pages <span className="text-black block">{book.pages}</span></p>
+          <p>Published Date <span className="text-black block">{book.published}</span></p>
+          <p className="font-semibold">Book Location <span className="text-black font-normal block">{book.location}</span></p>
         </div>
       </section>
 
@@ -148,7 +170,7 @@ export default function DetailBuku() {
       </div>
 
       {/* Footer */}
-      <Footer/>
+      <Footer />
     </div>
   );
 }

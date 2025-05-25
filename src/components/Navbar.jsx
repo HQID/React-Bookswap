@@ -5,17 +5,18 @@ import { Link } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
 import { toast } from "react-hot-toast";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 export default function Navbar() {
   const { user } = useContext(AuthContext);
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const navigate = useNavigate();
 
   const logout = async () => {
     try {
       const res = await axios.post("/logout")
       if(res.data.status) {
-        toast.success("Logout successful")
-        window.location.reload()
+        navigate('/signin');
       }
     } catch (err) {
       console.log(err)

@@ -1,18 +1,17 @@
 import React from "react";
+import { useContext, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import book1 from '../assets/book1.png';
 import book2 from '../assets/book2.png';
 import book3 from '../assets/book3.png';
 import book4 from '../assets/book4.png';
-import book5 from '../assets/book5.png';
-import book6 from '../assets/book6.png';
-import book7 from '../assets/book7.png';
-import book8 from '../assets/book8.png';
+import axios from "axios";
+import {AuthContext} from "../context/AuthContext";
+import {toast} from "react-hot-toast";
 
 function Card({ title, author, status, img }) {
-  const isSwap = status?.toUpperCase() === "SWAP";
-
   return (
     <div className="bg-white rounded-2xl border border-[#D9D9D9] shadow-md overflow-hidden transition-transform hover:scale-105 duration-300">
       {img && <img src={img} alt={title} className="w-full h-64 object-contain p-4" />}
@@ -67,17 +66,37 @@ const books = [
 ];
 
 export default function UserDetail() {
+  const { user, setUser } = useContext(AuthContext);
+
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    axios.get('/verify')
+      .then((res) => {
+        if (!res.data.status) {
+          setUser(null); // Reset user state
+          navigate('/signin');
+        }
+      })
+      .catch((err) => {
+        console.error("Failed to verify user:", err);
+        toast.error("Session expired. Please log in again.");
+        setUser(null); // Reset user state
+        navigate('/signin');
+      });
+  }, [navigate, setUser]);
+
   return (
     <div className="bg-white min-h-screen">
       <Navbar />
 
       {/* User Info */}
       <section className="p-8">
-        <h1 className="text-2xl font-bold text-[#2D336B] ml-20">Welcome, User!</h1>
+        <h1 className="text-2xl font-bold text-[#2D336B] ml-20">Welcome, {user?.username}!</h1>
         <div className="grid grid-cols-3 mt-4 gap-6 items-start">
           <div className="flex flex-col items-center">
             <img
-              src="/avatar-placeholder.png"
+              src="https://cdn-icons-png.flaticon.com/512/6175/6175043.png"
               alt="User Avatar"
               className="w-24 h-24 rounded-full border"
             />
@@ -87,19 +106,19 @@ export default function UserDetail() {
             <p>
               Full Name:{" "}
               <span className="font-medium">
-                Sofia Qatrunnada <span className="text-sm text-blue-500">✎</span>
+                {user?.fullname} <span className="text-sm text-blue-500">✎</span>
               </span>
             </p>
             <p>
               Username:{" "}
               <span className="font-medium">
-                Filarditz <span className="text-sm text-blue-500">✎</span>
+                {user?.username} <span className="text-sm text-blue-500">✎</span>
               </span>
             </p>
             <p>
               Gender:{" "}
               <span className="font-medium">
-                Male <span className="text-sm text-blue-500">✎</span>
+                {user?.gender} <span className="text-sm text-blue-500">✎</span>
               </span>
             </p>
           </div>
@@ -107,19 +126,19 @@ export default function UserDetail() {
             <p>
               Address:{" "}
               <span className="font-medium">
-                Lebih jauh dari Palu Barat <span className="text-sm text-blue-500">✎</span>
+                {user?.address} <span className="text-sm text-blue-500">✎</span>
               </span>
             </p>
             <p>
               Telephone:{" "}
               <span className="font-medium">
-                +62 823 4897 0725 <span className="text-sm text-blue-500">✎</span>
+                {user?.phone} <span className="text-sm text-blue-500">✎</span>
               </span>
             </p>
             <p>
               Email:{" "}
               <span className="font-medium">
-                Fakmal@gmail.com <span className="text-sm text-blue-500">✎</span>
+                {user?.email} <span className="text-sm text-blue-500">✎</span>
               </span>
             </p>
           </div>

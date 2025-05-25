@@ -10,7 +10,6 @@ export const AuthProvider = ({ children }) => {
         if(!user) {
             axios.get('/user').then(({data}) => {
                 setUser(data);
-                console.log(data)
             }).catch((err) => {
                 console.error("Failed to fetch user data:", err);
             })

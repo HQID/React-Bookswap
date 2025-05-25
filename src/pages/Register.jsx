@@ -29,7 +29,7 @@ export default function Register() {
       datas.gender.trim()!== '' &&
       datas.city.trim()!== '' &&
       datas.address.trim()!== '' &&
-      datas.telephone.trim()!== '' &&
+      datas.phone.trim()!== '' &&
       datas.email.trim()!== '' &&
       datas.password.trim()!== '',
       datas.password === datas.confirmPassword
@@ -46,7 +46,7 @@ export default function Register() {
           gender: '',
           city: '',
           address: '',
-          telephone: '',
+          phone: '',
           email: '',
           password: '',
           confirmPassword: ''
@@ -128,9 +128,9 @@ export default function Register() {
                     <input
                     type="telephone"
                     placeholder="Handphone Number"
-                    value={datas.telephone}
+                    value={datas.phone}
                     onChange={(e) => setDatas({
-                      ...datas, telephone: e.target.value
+                      ...datas, phone: e.target.value
                     })}
                     className="w-full p-1 border-b my-1 focus:outline-none focus:ring-2 focus:ring-indigo-500"
                   />
