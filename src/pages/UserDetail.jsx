@@ -1,21 +1,23 @@
 import React from "react";
-import { useContext, useEffect } from "react";
+import { useState, useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
-import book1 from '../assets/book1.png';
-import book2 from '../assets/book2.png';
-import book3 from '../assets/book3.png';
-import book4 from '../assets/book4.png';
 import axios from "axios";
 import {AuthContext} from "../context/AuthContext";
 import {toast} from "react-hot-toast";
+import PopupAddBook from "../components/AddBook";
 
-function Card({ title, author, status, img }) {
+function Card({ title, author, status, img, onDelete, onClick }) {
   return (
-    <div className="bg-white rounded-2xl border border-[#D9D9D9] shadow-md overflow-hidden transition-transform hover:scale-105 duration-300">
-      {img && <img src={img} alt={title} className="w-full h-64 object-contain p-4" />}
-
+    <div className="bg-white rounded-2xl border border-[#D9D9D9] shadow-md overflow-hidden transition-transform hover:scale-105 duration-300 relative">
+      {img && <img src={img} alt={title} className="w-full h-64 object-contain p-4" onClick={onClick}/>}
+      <button
+        className="absolute top-2 right-2 bg-slate-500 text-white p-1 rounded-full"
+        onClick={onDelete}
+      >
+        🗑
+      </button>
       <div className="px-4 pb-4">
         {/* Penulis */}
         <p className="text-sm text-gray-400 font-semibold">{author}</p>
@@ -38,35 +40,25 @@ function CardContent({ children }) {
   );
 }
 
-const books = [
-  {
-    title: "Over (Love) Weight",
-    author: "Desy Muliadina",
-    status: "AVAILABLE",
-    img: book1,
-  },
-  {
-    title: "Pasta Kacang Merah",
-    author: "Durian Sukegawa",
-    status: "EXCHANGED",
-    img: book2,
-  },
-  {
-    title: "Masyarakat Adat",
-    author: "Ahmad Arif",
-    status: "AVAILABLE",
-    img: book3,
-  },
-  {
-    title: "MetroPop: Ganjil Genap",
-    author: "Almira Bastari",
-    status: "AVAILABLE",
-    img: book4,
-  },
-];
-
 export default function UserDetail() {
   const { user, setUser } = useContext(AuthContext);
+  const [books, setBooks] = useState([]);
+  const [newBook, setNewBook] = useState([])
+
+  useEffect(() => {
+    const fetchBooks = async () => {
+      try {
+        const response = await axios.get('/book/my');
+        setBooks(response.data.data);
+        console.log(response.data.data);
+      } catch (error) {
+        console.error("Error fetching books:", error);
+        toast.error("Failed to load books.");
+      }
+    };
+
+    fetchBooks(); 
+  }, [])
 
   const navigate = useNavigate();
 
@@ -85,6 +77,40 @@ export default function UserDetail() {
         navigate('/signin');
       });
   }, [navigate, setUser]);
+
+  const [showPopup, setShowPopup] = useState(false);
+
+  const handleAddBook = () => {
+    setShowPopup(true);
+  }
+
+  const handleBookAdded = async () => {
+    const response = await axios.post('/book/add', newBook);
+    setNewBook(response.data.data);
+  }
+
+  const handleDeleteBook = async (bookId) => {
+    try {
+      await axios.delete(`/book/delete/${bookId}`);
+      setBooks((prevBooks) => prevBooks.filter((book) => book.id !== bookId));
+      toast.success("Book deleted successfully.");
+      window.location.reload();
+    } catch (error) {
+      console.error("Error deleting book:", error);
+      toast.error("Failed to delete book.");
+    }
+  };
+
+  if(!user) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-[#F9FAFB]">
+        <div className="flex flex-col items-center">
+          <div className="w-16 h-16 border-4 border-[#1E1D6A] border-t-transparent rounded-full animate-spin"></div>
+          <p className="mt-4 text-[#1E1D6A] font-semibold text-lg">Loading User Details...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="bg-white min-h-screen">
@@ -144,36 +170,39 @@ export default function UserDetail() {
           </div>
         </div>
 
-        {/* Right Options */}
-        <div className="flex justify-end gap-6 mt-4 text-sm text-gray-700 underline">
-          <p>Cart</p>
-          <p>Transaction</p>
-        </div>
-
         {/* Buttons */}
         <div className="flex justify-end gap-4 mt-4">
-          <button className="bg-red-600 text-white px-4 py-2 rounded-lg">Log Out</button>
-          <button className="bg-[#1E1D6A] text-white px-4 py-2 rounded-lg">Update Book</button>
+          <button className="bg-[#1E1D6A] text-white px-4 py-2 rounded-lg" onClick={handleAddBook}>Add Book</button>
+          <button className="bg-[#1E1D6A] text-white px-4 py-2 rounded-lg">Transaction</button>
         </div>
       </section>
 
       {/* Book Cards */}
       <section className="bg-blue-50 px-6 py-10">
-        <h1 className="text-[#1E1D6A] text-[35px] font-bold mb-6">Explore More Book</h1>
+        <h1 className="text-[#1E1D6A] text-[35px] font-bold mb-6">My Book</h1>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-12">
-         {books.map((book, index) => (
-        <Card
-        key={index}
-        title={book.title}
-        author={book.author}
-        status={book.status}
-        img={book.img}
-      />
-    ))}
-    </div>
-    </section>
+          {books.map((book) => (
+            <Card
+              key={book._id}
+              title={book.title}
+              author={book.author}
+              status={book.status}
+              img={book.image}
+              onDelete={() => handleDeleteBook(book._id)}
+              onClick={() => navigate(`/detail/${book._id}`)}
+            />
+          ))}
+        </div>
+      </section>
+      {showPopup && (
+        <PopupAddBook
+          onClose={() => setShowPopup(false)}
+          onBookAdded={handleBookAdded}
+          />
+      )}
       {/* Footer */}
       <Footer />
     </div>
-  );
+    
+  )
 }

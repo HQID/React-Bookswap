@@ -65,7 +65,14 @@ export default function DetailBuku() {
   }, [id]);
 
   if (!book) {
-    return <div>Loading...</div>;
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-[#F9FAFB]">
+        <div className="flex flex-col items-center">
+          <div className="w-16 h-16 border-4 border-[#1E1D6A] border-t-transparent rounded-full animate-spin"></div>
+          <p className="mt-4 text-[#1E1D6A] font-semibold text-lg">Loading book details...</p>
+        </div>
+      </div>
+    );
   }
 
   const books = [
