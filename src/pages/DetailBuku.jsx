@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useParams } from "react-router-dom";
+import { useParams, Link, useNavigate } from "react-router-dom";
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import axios from "axios";
@@ -40,7 +40,8 @@ function CardContent({ children }) {
 export default function DetailBuku() {
   const { id } = useParams();
   const [book, setBook] = useState(null);
-
+  const navigate = useNavigate();
+  
   useEffect(() => {
     const fetchBook = async () => {
       try {
@@ -64,6 +65,12 @@ export default function DetailBuku() {
     fetchBook();
   }, [id]);
 
+  const handleAddToCart = () => {
+    // Here you would typically add the book to cart state/storage
+    // For now, we'll just navigate to the cart page
+    navigate('/cart');
+  };
+  
   if (!book) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-[#F9FAFB]">
@@ -134,8 +141,13 @@ export default function DetailBuku() {
           <p className="py-1 text-[43545D] text-[15px]  mb-2">{book.description}</p>
 
           <div className="flex gap-4 mb-6">
-            <button className="bg-[#1E1D6A] text-white font-semibold px-9 py-1 shadow-md">Cart</button>
-            <button className="bg-white text-[#1E1D6A] font-semibold px-9  py-1 shadow-md">Swap</button>
+            <button 
+              onClick={handleAddToCart}
+              className="bg-[#1E1D6A] text-white font-semibold px-9 py-1 shadow-md"
+            >
+              Cart
+            </button>
+            <button className="bg-white text-[#1E1D6A] font-semibold px-9 py-1 shadow-md">Swap</button>
           </div>
         </div>
       </section>

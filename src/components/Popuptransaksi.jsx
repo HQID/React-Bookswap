@@ -7,7 +7,7 @@ const Popuptransaksi = ({ isOpen, onClose, transaction }) => {
     <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
       <div className="bg-white w-full max-w-2xl rounded-lg overflow-y-auto max-h-[90vh]">
         <div className="p-4 border-b flex justify-between items-center">
-          <h2 className="text-xl font-bold text-[#1F255E]">Detail Transaksi</h2>
+          <h2 className="text-xl font-bold text-[#1F255E]">Transaction Detail</h2>
           <button onClick={onClose} className="text-2xl text-gray-500 hover:text-gray-700">
             &times;
           </button>
@@ -16,14 +16,14 @@ const Popuptransaksi = ({ isOpen, onClose, transaction }) => {
         {/* Transaction completed section */}
         {transaction.status === "Completed" && (
           <div className="px-4 py-3 border-b">
-            <div className="font-bold text-[#1F255E] text-lg">Penukaran Selesai</div>
+            <div className="font-bold text-[#1F255E] text-lg">Swap Completed</div>
             <div className="grid grid-cols-1 gap-1 mt-2">
               <div className="flex justify-between">
-                <span className="text-gray-600">No. Transaksi</span>
+                <span className="text-gray-600">Transaction Number</span>
                 <span className="text-right">{transaction.id}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-gray-600">Tanggal Penukaran</span>
+                <span className="text-gray-600">Swap Date</span>
                 <span className="text-right">{transaction.date}</span>
               </div>
             </div>
@@ -50,7 +50,7 @@ const Popuptransaksi = ({ isOpen, onClose, transaction }) => {
 
         {/* Book details section */}
         <div className="px-4 py-3 border-b">
-          <h3 className="font-bold text-[#1F255E]">Detail Buku</h3>
+          <h3 className="font-bold text-[#1F255E]">Book Detail</h3>
           <div className="mt-3 flex">
             <div className="w-20 h-28 bg-gray-100 rounded flex items-center justify-center mr-3">
               {transaction.item?.image ? (
@@ -65,7 +65,7 @@ const Popuptransaksi = ({ isOpen, onClose, transaction }) => {
               <span className="inline-block mt-1 px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-xs">
                 Good
               </span>
-              <p className="mt-2">Jumlah: 1 buku</p>
+              <p className="mt-2">Total: 1 book</p>
             </div>
           </div>
         </div>
@@ -80,8 +80,8 @@ const Popuptransaksi = ({ isOpen, onClose, transaction }) => {
                 </svg>
               </div>
               <div>
-                <h4 className="font-medium text-[#1F255E]">Kamu pakai proteksi di transaksi ini</h4>
-                <p className="text-gray-600 text-sm">Setelah penukaran selesai, kamu bisa cek polis dan ajukan klaim lewat sini</p>
+                <h4 className="font-medium text-[#1F255E]">You use protection on this transaction</h4>
+                <p className="text-gray-600 text-sm">Once the swap is complete, you can check the policy and submit a claim here</p>
               </div>
             </div>
             <button className="text-gray-400">
@@ -95,7 +95,7 @@ const Popuptransaksi = ({ isOpen, onClose, transaction }) => {
         {/* Status section */}
         <div className="px-4 py-3 border-b">
           <div className="flex justify-between items-center">
-            <span>Status Penukaran</span>
+            <span>Redemption Status</span>
             <span className={`${
               transaction.status === "Completed" 
                 ? "text-green-600 bg-green-100" 
@@ -111,7 +111,7 @@ const Popuptransaksi = ({ isOpen, onClose, transaction }) => {
         {/* Action buttons */}
         <div className="p-4 grid grid-cols-2 gap-3">
           <button className="py-3 w-full text-center border border-gray-300 rounded-md text-gray-700 font-medium">
-            Bantuan
+            Help
           </button>
           <button className="py-3 w-full text-center bg-[#1F255E] text-white rounded-md font-medium">
             Chat Partner

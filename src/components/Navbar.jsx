@@ -46,9 +46,10 @@ export default function Navbar() {
     
         {/* Right Side */}
         <div className="flex items-center space-x-4">
-          <button className="text-[#1E1D6A]">
+          <Link to="/cart" className="relative">
             <ShoppingCart />
-          </button>
+            {/* Optional: Display cart item count if you have that state */}
+          </Link>
           {user ? (
             <div className="relative">
               <button
