@@ -1,6 +1,6 @@
 import React from "react";
 import { useState, useContext, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import axios from "axios";
@@ -173,7 +173,12 @@ export default function UserDetail() {
         {/* Buttons */}
         <div className="flex justify-end gap-4 mt-4">
           <button className="bg-[#1E1D6A] text-white px-4 py-2 rounded-lg" onClick={handleAddBook}>Add Book</button>
-          <button className="bg-[#1E1D6A] text-white px-4 py-2 rounded-lg">Transaction</button>
+          <Link 
+            to={`/transaction/${user.id}`} 
+            className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
+          >
+            Transactions
+          </Link>
         </div>
       </section>
 

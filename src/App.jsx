@@ -7,6 +7,7 @@ import Register from './pages/Register';
 import axios from 'axios';
 import DetailBuku from './pages/DetailBuku';
 import UserDetail from './pages/UserDetail';
+import DetailTransaksi from './pages/Detailtransaksi';
 
 const apiDev = import.meta.env.VITE_API_BASE_URL_DEV
 axios.defaults.baseURL = apiDev;
@@ -23,6 +24,7 @@ function App() {
           <Route path="/signup" element={<Register />} />
           <Route path="/profile" element={<UserDetail />} />
           <Route path="/detail/:id" element={<DetailBuku />} />
+          <Route path="/transaction/:id" element={<DetailTransaksi />} />
         </Routes>
       </Router>
     </>
