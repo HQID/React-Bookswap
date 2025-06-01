@@ -73,7 +73,7 @@ export default function Dashboard() {
 
   {/* Book Swap Section */}
   <section className="py-10">
-    <h2 className="text-3xl font-bold mb-6 text-[#1E1D6A]">Swap</h2>
+    <h2 className="text-3xl font-bold mb-6 text-[#1E1D6A]">Swap your Books!</h2>
     <div className="grid grid-cols-2 md:grid-cols-4 gap-12">
     {books.map((book) => (
       <Card
@@ -82,7 +82,7 @@ export default function Dashboard() {
         author={book.authors}
         status={book.status?.toUpperCase()}
         img={book.image}
-        onClick={() => navigate(`/detail/${book._id}`)}
+        onClick={() => navigate(`/book/${book._id}`)}
       />
       ))}
     </div>

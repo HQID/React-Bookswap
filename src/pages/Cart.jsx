@@ -1,36 +1,33 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+import { Link, useNavigate } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 
 const Cart = () => {
-  const [cartItems, setCartItems] = useState([
-    {
-      id: 1,
-      title: "To Kill a Mockingbird",
-      author: "Harper Lee",
-      condition: "Good",
-      image: "https://source.unsplash.com/random/100x150/?book",
-      points: 150,
-      quantity: 1
+  const [cartItems, setCartItems] = useState([]);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const fetchCartItems = async () => {
+      try {
+        const response = await axios.get('/cart');
+        setCartItems(response.data.data);
+      } catch (error) {
+        console.error("Error fetching cart items:", error);
+      }
+    };
+    fetchCartItems();
+  }, []);
+
+  const handleRemoveItem = async (id) => {
+    try {
+      await axios.delete(`/cart/delete/${id}`,);
+      setCartItems(prevItems => prevItems.filter(item => item._id !== id));
+    } catch (error) {
+      console.error("Error removing item:", error);
     }
-  ]);
-
-  const handleQuantityChange = (id, newQuantity) => {
-    if (newQuantity < 1) return;
-    
-    setCartItems(prevItems => 
-      prevItems.map(item => 
-        item.id === id ? { ...item, quantity: newQuantity } : item
-      )
-    );
   };
-
-  const handleRemoveItem = (id) => {
-    setCartItems(prevItems => prevItems.filter(item => item.id !== id));
-  };
-
-  const totalPoints = cartItems.reduce((total, item) => total + (item.points * item.quantity), 0);
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -54,28 +51,25 @@ const Cart = () => {
               </div>
               
               {cartItems.map(item => (
-                <div key={item.id} className="p-4 border-b flex items-center">
-                  <div className="flex-shrink-0 mr-4">
-                    <img 
-                      src={item.image} 
-                      alt={item.title} 
-                      className="w-24 h-32 object-cover rounded"
-                    />
+                <div key={item._id} className="p-4 border-b flex items-center cursor-pointer">
+                  <div className="flex-shrink-0 mr-4" onClick={() => navigate(`/book/${item.bookId._id}`)}>
+                    {item.bookId?.image && (
+                      <img 
+                        src={item.bookId.image} 
+                        alt={item.bookId?.title || "Unknown Title"} 
+                        className="w-24 h-32 object-cover rounded"
+                      />
+                    )}
                   </div>
                   
                   <div className="flex-grow">
-                    <h3 className="font-medium text-lg">{item.title}</h3>
-                    <p className="text-gray-600">{item.author}</p>
-                    <div className="mt-1">
-                      <span className="inline-block px-2 py-1 bg-blue-100 text-blue-800 rounded-full text-xs">
-                        {item.condition}
-                      </span>
-                    </div>
+                    <h3 className="font-medium text-lg">{item.bookId?.title || "Unknown Title"}</h3>
+                    <p className="text-gray-600">{item.bookId?.userId?.username || "Unknown User"}</p>
                   </div>
                   
                   <div className="flex flex-col items-end gap-2">
                     <button 
-                      onClick={() => handleRemoveItem(item.id)}
+                      onClick={() => handleRemoveItem(item._id)}
                       className="text-gray-400 hover:text-red-500"
                     >
                       <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">

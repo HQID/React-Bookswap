@@ -3,13 +3,14 @@ import logopng from '../assets/logo.png';
 import { ShoppingCart, Search } from "lucide-react";
 import { Link } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
-import { toast } from "react-hot-toast";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
 export default function Navbar() {
   const { user } = useContext(AuthContext);
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [searchResults, setSearchResults] = useState([]);
   const navigate = useNavigate();
 
   const logout = async () => {
@@ -22,6 +23,20 @@ export default function Navbar() {
       console.log(err)
     }
   }
+
+  const handleSearch = async (query) => {
+    setSearchQuery(query);
+    if (query.trim() === "") {
+      setSearchResults([]);
+      return;
+    }
+    try {
+      const res = await axios.post("/book/search", { query });
+      setSearchResults(res.data.data || []);
+    } catch (err) {
+      console.error(err);
+    }
+  };
 
   return (
     <nav className="bg-white">
@@ -38,10 +53,25 @@ export default function Navbar() {
               <Search className="text-[#A6A6A6] mr-2" />
             <input
               type="text"
+              value={searchQuery}
+              onChange={(e) => handleSearch(e.target.value)}
               className="w-full outline-none text-sm text-gray-700 placeholder:text-gray-400"
+              placeholder="Search books..."
             />
           </div>
-
+          {searchResults.length > 0 && (
+            <div className="absolute bg-white border rounded-lg shadow-lg mt-2 w-full max-h-60 overflow-y-auto">
+              {searchResults.map((book) => (
+                <Link
+                  key={book._id}
+                  to={`/book/${book._id}`}
+                  className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                >
+                  {book.title} by {book.authors}
+                </Link>
+              ))}
+            </div>
+          )}
         </div>
     
         {/* Right Side */}

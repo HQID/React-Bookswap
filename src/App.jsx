@@ -8,6 +8,7 @@ import axios from 'axios';
 import DetailBuku from './pages/DetailBuku';
 import UserDetail from './pages/UserDetail';
 import DetailTransaksi from './pages/Detailtransaksi';
+import IncomingTrade from './pages/IncomingTrade';
 import Cart from './pages/Cart';
 
 const apiDev = import.meta.env.VITE_API_BASE_URL_DEV
@@ -24,9 +25,10 @@ function App() {
           <Route path="/signin" element={<Login />} />
           <Route path="/signup" element={<Register />} />
           <Route path="/profile" element={<UserDetail />} />
-          <Route path="/detail/:id" element={<DetailBuku />} />
-          <Route path="/transaction/:id" element={<DetailTransaksi />} />
+          <Route path="/book/:id" element={<DetailBuku />} />
+          <Route path="/transaction" element={<DetailTransaksi />} />
           <Route path="/cart" element={<Cart />} />
+          <Route path="/trade" element={<IncomingTrade />} />
         </Routes>
       </Router>
     </>

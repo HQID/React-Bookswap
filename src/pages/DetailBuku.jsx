@@ -3,17 +3,12 @@ import { useParams, Link, useNavigate } from "react-router-dom";
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import axios from "axios";
-import book5 from '../assets/book5.png';
-import book6 from '../assets/book6.png';
-import book7 from '../assets/book7.png';
-import book8 from '../assets/book8.png';
+import PopupSwapBook from '../components/PopupSwapBook';
 
-
-
-function Card({ title, author, status, img }) {
+function Card({ title, author, status, img, onClick }) {
   return (
-    <div className="bg-white rounded-2xl border border-[#D9D9D9] shadow-md overflow-hidden transition-transform hover:scale-105 duration-300">
-      {img && <img src={img} alt={title} className="w-full h-64 object-contain p-4" />}
+    <div className="bg-white rounded-2xl border border-[#D9D9D9] shadow-md overflow-hidden transition-transform hover:scale-105 duration-300" onClick={onClick}>
+      {img && <img src={img} alt={title} className="w-full h-64 object-contain p-4"/>}
 
       <div className="px-4 pb-4">
         {/* Penulis */}
@@ -40,6 +35,8 @@ function CardContent({ children }) {
 export default function DetailBuku() {
   const { id } = useParams();
   const [book, setBook] = useState(null);
+  const [showSwapPopup, setShowSwapPopup] = useState(false);
+  const [randomBooks, setRandomBooks] = useState([]);
   const navigate = useNavigate();
   
   useEffect(() => {
@@ -62,52 +59,48 @@ export default function DetailBuku() {
       }
     };
 
+    const fetchRandomBooks = async () => {
+      try {
+        const response = await axios.get('/book'); // Adjust the endpoint as needed
+        const allBooks = response.data.data;
+        const shuffledBooks = allBooks.sort(() => 0.5 - Math.random()).slice(0, 4);
+        setRandomBooks(shuffledBooks);
+      } catch (error) {
+        console.error("Error fetching random books:", error);
+      }
+    };
+
     fetchBook();
+    fetchRandomBooks();
   }, [id]);
 
-  const handleAddToCart = () => {
-    // Here you would typically add the book to cart state/storage
-    // For now, we'll just navigate to the cart page
-    navigate('/cart');
+  const handleAddToCart = async () => {
+    try {
+      await axios.post('/cart/add', { bookId: book._id });
+      navigate('/cart');
+    } catch (error) {
+      console.error("Error adding book to cart:", error);
+    }
+  };
+
+  const handleSwap = () => {
+    setShowSwapPopup(true);
+  };
+
+  const handleCloseSwapPopup = () => {
+    setShowSwapPopup(false);
   };
   
-  if (!book) {
+  if (!book && randomBooks.length === 0) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-[#F9FAFB]">
         <div className="flex flex-col items-center">
           <div className="w-16 h-16 border-4 border-[#1E1D6A] border-t-transparent rounded-full animate-spin"></div>
-          <p className="mt-4 text-[#1E1D6A] font-semibold text-lg">Loading book details...</p>
+          <p className="mt-4 text-[#1E1D6A] font-semibold text-lg">Loading Book details...</p>
         </div>
       </div>
     );
   }
-
-  const books = [
-    {
-      author: 'Adrindia Ryandisza',
-      title: 'Uang Gawat Darurat',
-      status: 'SWAP',
-      img: book5
-    },
-    {
-      author: 'DUBU/CHUGONG',
-      title: 'Solo Leveling 7',
-      status: 'SWAP',
-      img: book6
-    },
-    {
-      author: 'Brian Khrisna',
-      title: 'Seporsi Mie Ayam Sebelum Mati',
-      status: 'SWAP',
-      img: book7
-    },
-    {
-      author: 'Romee',
-      title: '30 Juz',
-      available: 'Rp77.000',
-      img: book8
-    }
-  ];
   
   return (
     <div className="min-h-screen font-sans">
@@ -118,7 +111,7 @@ export default function DetailBuku() {
 
       {/* Book Section */}
       <section className="flex justify py-12 gap-16">
-        <img src={book.image} alt={book.title} className="w-50 h-80  shadow-md" />
+        <img src={book.image} alt={book.title} className="w-50 h-80 shadow-md" />
 
         <div>
           <h2 className="text-[35px] font-bold text-[#2D336B]">{book.title}</h2>
@@ -140,6 +133,7 @@ export default function DetailBuku() {
 
           <p className="py-1 text-[43545D] text-[15px]  mb-2">{book.description}</p>
 
+          {book.status.toLowerCase() !== 'exchanged' && (
           <div className="flex gap-4 mb-6">
             <button 
               onClick={handleAddToCart}
@@ -147,8 +141,14 @@ export default function DetailBuku() {
             >
               Cart
             </button>
-            <button className="bg-white text-[#1E1D6A] font-semibold px-9 py-1 shadow-md">Swap</button>
+            <button 
+              onClick={handleSwap}
+              className="bg-white text-[#1E1D6A] font-semibold px-9 py-1 shadow-md"
+            >
+              Swap
+            </button>
           </div>
+          )}
         </div>
       </section>
 
@@ -159,7 +159,7 @@ export default function DetailBuku() {
           <p>Publisher <span className="text-black block">{book.publisher}</span></p>
           <p>Language <span className="text-black block">{book.languange}</span></p>
           <p>Purchase Date <span className="text-black block">{book.purchase}</span></p>
-          <p className="font-semibold">Book Condition <span className="text-black font-normal block">Like New</span></p>
+          <p className="font-semibold">Owner <span className="text-black font-normal block">{book.userId?.username}</span></p>
 
           <p>ISBN <span className="text-black block">{book.isbn}</span></p>
           <p>Pages <span className="text-black block">{book.pages}</span></p>
@@ -168,26 +168,25 @@ export default function DetailBuku() {
         </div>
       </section>
 
-
       {/* Explore More Books */}
-      <section className=" py-10">
-        <h3 className="text-[#1E1D6A] text-[35px] font-bold mb-6 ">Explore More Books</h3>
+      <section className="py-10">
+        <h3 className="text-[#1E1D6A] text-[35px] font-bold mb-6">Explore More Books</h3>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-12">
-        {books.map((book, index) => (
-      <Card
-        key={index}
-        title={book.title}
-        author={book.author}
-        status={book.status}
-        img={book.img}
-      />
-      ))}
-
-      </div>
+          {randomBooks.map((randomBook) => (
+            <Card
+              key={randomBook._id}
+              title={randomBook.title}
+              author={randomBook.authors}
+              status={randomBook.status}
+              img={randomBook.image}
+              onClick={() => navigate(`/book/${randomBook._id}`)}
+            />
+          ))}
+        </div>
       </section>
 
       </div>
-
+      {showSwapPopup && <PopupSwapBook onClose={handleCloseSwapPopup} bookId={book.id} />}
       {/* Footer */}
       <Footer />
     </div>

@@ -12,12 +12,16 @@ function Card({ title, author, status, img, onDelete, onClick }) {
   return (
     <div className="bg-white rounded-2xl border border-[#D9D9D9] shadow-md overflow-hidden transition-transform hover:scale-105 duration-300 relative">
       {img && <img src={img} alt={title} className="w-full h-64 object-contain p-4" onClick={onClick}/>}
-      <button
-        className="absolute top-2 right-2 bg-slate-500 text-white p-1 rounded-full"
-        onClick={onDelete}
+      <button 
+        onClick={status !== "exchanged" ? onDelete : null}
+        disabled={status === "exchanged"}
+        className={`absolute top-2 right-2 text-gray-400 ${status === "exchanged" ? "cursor-not-allowed opacity-50" : "hover:text-red-500"}`}
       >
-        🗑
+        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+          <path fillRule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clipRule="evenodd" />
+        </svg>
       </button>
+      
       <div className="px-4 pb-4">
         {/* Penulis */}
         <p className="text-sm text-gray-400 font-semibold">{author}</p>
@@ -50,7 +54,6 @@ export default function UserDetail() {
       try {
         const response = await axios.get('/book/my');
         setBooks(response.data.data);
-        console.log(response.data.data);
       } catch (error) {
         console.error("Error fetching books:", error);
         toast.error("Failed to load books.");
@@ -66,7 +69,7 @@ export default function UserDetail() {
     axios.get('/verify')
       .then((res) => {
         if (!res.data.status) {
-          setUser(null); // Reset user state
+          setUser(null);
           navigate('/signin');
         }
       })
@@ -101,7 +104,7 @@ export default function UserDetail() {
     }
   };
 
-  if(!user) {
+  if (user === null) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-[#F9FAFB]">
         <div className="flex flex-col items-center">
@@ -174,10 +177,16 @@ export default function UserDetail() {
         <div className="flex justify-end gap-4 mt-4">
           <button className="bg-[#1E1D6A] text-white px-4 py-2 rounded-lg" onClick={handleAddBook}>Add Book</button>
           <Link 
-            to={`/transaction/${user.id}`} 
+            to={`/transaction`} 
             className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
           >
             Transactions
+          </Link>
+          <Link 
+            to={`/trade`} 
+            className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
+          >
+            Incoming Trade
           </Link>
         </div>
       </section>
@@ -194,7 +203,7 @@ export default function UserDetail() {
               status={book.status}
               img={book.image}
               onDelete={() => handleDeleteBook(book._id)}
-              onClick={() => navigate(`/detail/${book._id}`)}
+              onClick={() => navigate(`/book/${book._id}`)}
             />
           ))}
         </div>
