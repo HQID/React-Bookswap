@@ -14,7 +14,7 @@ export default function Register() {
     gender: '',
     city: '',
     address: '',
-    telephone: '',
+    phone: '',
     email: '',
     password: '',
     confirmPassword: ''
